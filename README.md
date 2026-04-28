@@ -393,7 +393,7 @@ Si encontrás un error en los cálculos o en la aplicación:
 
 ---
 
-## 👨‍💻 Autor
+## 👤 Autor
 
 **Fabián Rosales**
 
