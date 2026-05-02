@@ -25,7 +25,7 @@ import type {
 } from '@/types/fiscal.types';
 import { getCat } from '@/utils/ccss.utils';
 import { calculateIncomeTax, calculateMixedRegimeIncomeTax } from '@/utils/isr.utils';
-import { formatColones, formatDollars, formatPercentage } from '@/utils/formatters';
+import { formatPercentage } from '@/utils/formatters';
 
 /**
  * Calculates all fiscal values based on current calculator state.

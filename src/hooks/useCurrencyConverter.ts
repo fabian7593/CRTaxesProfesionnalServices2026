@@ -1,5 +1,5 @@
 import { useCallback } from 'react'
-import type { Currency } from '@/types/fiscal.types'
+import type { CurrencyType } from '@/types/fiscal.types'
 
 interface SliderConfig {
   minimumValue: number
@@ -23,12 +23,12 @@ interface CurrencyConverterConfig {
 interface UseCurrencyConverterReturn {
   convertRate: (
     currentRate: number,
-    fromCurrency: Currency,
-    toCurrency: Currency,
+    fromCurrency: CurrencyType,
+    toCurrency: CurrencyType,
     exchangeRateVenta: number,
     exchangeRateCompra: number
   ) => number
-  getSliderConfig: (activeCurrency: Currency) => SliderConfig
+  getSliderConfig: (activeCurrency: CurrencyType) => SliderConfig
 }
 
 /**
@@ -51,8 +51,8 @@ export function useCurrencyConverter(config: CurrencyConverterConfig): UseCurren
   const convertRate = useCallback(
     (
       currentRate: number,
-      fromCurrency: Currency,
-      toCurrency: Currency,
+      fromCurrency: CurrencyType,
+      toCurrency: CurrencyType,
       exchangeRateVenta: number,
       exchangeRateCompra: number
     ): number => {
@@ -86,7 +86,7 @@ export function useCurrencyConverter(config: CurrencyConverterConfig): UseCurren
    * @returns Slider configuration object with min, max, and step values
    */
   const getSliderConfig = useCallback(
-    (activeCurrency: Currency): SliderConfig => {
+    (activeCurrency: CurrencyType): SliderConfig => {
       if (activeCurrency === 'usd') {
         return {
           minimumValue: config.usdSliderConfig.min,
