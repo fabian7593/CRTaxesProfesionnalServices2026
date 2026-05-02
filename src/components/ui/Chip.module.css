@@ -1,0 +1,30 @@
+/* Base chip styles */
+.chip {
+  font-size: 12px;
+  font-weight: 500;
+  padding: 6px 14px;
+  border-radius: 20px;
+  border: 1.5px solid var(--line);
+  background: var(--surface);
+  color: var(--ink3);
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.chip:hover {
+  border-color: var(--muted);
+}
+
+/* Active state - green variant */
+.chip.onGreen {
+  background: var(--emerald-bg);
+  border-color: var(--emerald);
+  color: var(--emerald-mid);
+}
+
+/* Active state - amber variant */
+.chip.onAmber {
+  background: var(--amber-bg);
+  border-color: var(--amber);
+  color: var(--amber-mid);
+}

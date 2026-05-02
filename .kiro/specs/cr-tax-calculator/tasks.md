@@ -120,40 +120,40 @@ Las tareas están ordenadas para que cada una construya sobre la anterior. Kiro 
 ## Fase 4 — Componentes UI base
 
 ### Task 4.1 — Tooltip
-- [ ] Crear `src/components/ui/Tooltip.tsx` y `Tooltip.module.css`
-- [ ] Props: `content: string | React.ReactNode`
-- [ ] Renderiza el círculo `?` con el bubble on-hover
-- [ ] CSS exacto del `.tipw`, `.tpic`, `.tipb` del original
+- [x] Crear `src/components/ui/Tooltip.tsx` y `Tooltip.module.css`
+- [x] Props: `content: string | React.ReactNode`
+- [x] Renderiza el círculo `?` con el bubble on-hover
+- [x] CSS exacto del `.tipw`, `.tpic`, `.tipb` del original
 
 ### Task 4.2 — Chip
-- [ ] Crear `src/components/ui/Chip.tsx` y `Chip.module.css`
-- [ ] Props: `label: string`, `active: boolean`, `variant: 'green' | 'amber'`, `onClick: () => void`
-- [ ] `role="radio"`, `aria-checked={active}` para accesibilidad
-- [ ] Aplica `.on-g` o `.on-a` según variant y active
+- [x] Crear `src/components/ui/Chip.tsx` y `Chip.module.css`
+- [x] Props: `label: string`, `active: boolean`, `variant: 'green' | 'amber'`, `onClick: () => void`
+- [x] `role="radio"`, `aria-checked={active}` para accesibilidad
+- [x] Aplica `.on-g` o `.on-a` según variant y active
 
 ### Task 4.3 — SliderField
-- [ ] Crear `src/components/ui/SliderField.tsx` y `SliderField.module.css`
-- [ ] Props: `id`, `label`, `value`, `min`, `max`, `step`, `valueDisplay` (string formateado), `onChange`, `hints: [string, string]`, `tooltip?`
-- [ ] Renderiza track custom con fill animado
-- [ ] Calcula el ancho del fill como `(value - min) / (max - min) * 100`
-- [ ] El input range real está sobre el track con opacity:0
+- [x] Crear `src/components/ui/SliderField.tsx` y `SliderField.module.css`
+- [x] Props: `id`, `label`, `value`, `min`, `max`, `step`, `valueDisplay` (string formateado), `onChange`, `hints: [string, string]`, `tooltip?`
+- [x] Renderiza track custom con fill animado
+- [x] Calcula el ancho del fill como `(value - min) / (max - min) * 100`
+- [x] El input range real está sobre el track con opacity:0
 
 ### Task 4.4 — Modal
-- [ ] Crear `src/components/ui/Modal.tsx` y `Modal.module.css`
-- [ ] Props: `isOpen`, `onClose`, `title`, `children`, `maxWidth?`
-- [ ] `useEffect` para cerrar con Escape
-- [ ] Click en overlay cierra el modal
-- [ ] `document.body.style.overflow = 'hidden'` cuando está abierto
-- [ ] `role="dialog"`, `aria-modal="true"`, `aria-labelledby`
+- [x] Crear `src/components/ui/Modal.tsx` y `Modal.module.css`
+- [x] Props: `isOpen`, `onClose`, `title`, `children`, `maxWidth?`
+- [x] `useEffect` para cerrar con Escape
+- [x] Click en overlay cierra el modal
+- [x] `document.body.style.overflow = 'hidden'` cuando está abierto
+- [x] `role="dialog"`, `aria-modal="true"`, `aria-labelledby`
 
 ### Task 4.5 — CardSection
-- [ ] Crear `src/components/ui/CardSection.tsx` y `CardSection.module.css`
-- [ ] Props: `title`, `icon?` (emoji string), `iconVariant?: 'g' | 'a' | 'b' | 'r'`, `children`
-- [ ] Renderiza el header uppercase + línea decorativa + card wrapper
+- [x] Crear `src/components/ui/CardSection.tsx` y `CardSection.module.css`
+- [x] Props: `title`, `icon?` (emoji string), `iconVariant?: 'g' | 'a' | 'b' | 'r'`, `children`
+- [x] Renderiza el header uppercase + línea decorativa + card wrapper
 
 ### Task 4.6 — Badge (para Hero)
-- [ ] Crear `src/components/ui/Badge.tsx`
-- [ ] Props: `label`, `variant?: 'default' | 'green' | 'amber'`
+- [x] Crear `src/components/ui/Badge.tsx`
+- [x] Props: `label`, `variant?: 'default' | 'green' | 'amber'`
 
 ---
 

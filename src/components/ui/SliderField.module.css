@@ -1,0 +1,69 @@
+/* Slider row container */
+.sliderRow {
+  margin-bottom: 20px;
+}
+
+/* Top section: label + value display */
+.sliderTop {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.sliderLabel {
+  font-size: 13px;
+  font-weight: 400;
+  color: var(--ink3);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.sliderValue {
+  font-family: var(--mono);
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--ink);
+}
+
+/* Track container - holds both the visual fill and the real input */
+.sliderTrack {
+  position: relative;
+  height: 8px;
+  background: var(--bg2);
+  border-radius: 4px;
+  margin-bottom: 6px;
+}
+
+/* Visual fill bar with gradient */
+.sliderFill {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  background: linear-gradient(90deg, var(--emerald), var(--cobalt));
+  border-radius: 4px;
+  transition: width 0.08s;
+  pointer-events: none;
+}
+
+/* The actual range input - positioned over the track with opacity 0 */
+.sliderTrack input[type='range'] {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  cursor: pointer;
+  margin: 0;
+}
+
+/* Hints below the slider (min/max labels) */
+.sliderHints {
+  display: flex;
+  justify-content: space-between;
+  font-size: 11px;
+  color: var(--muted);
+}

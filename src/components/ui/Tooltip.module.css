@@ -1,0 +1,50 @@
+/* Tooltip wrapper - positioned relative to contain the bubble */
+.tooltipWrapper {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+}
+
+/* The ? icon circle */
+.tooltipIcon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  background: var(--bg2);
+  border: 1px solid var(--line);
+  border-radius: 50%;
+  font-size: 9px;
+  font-family: var(--mono);
+  color: var(--muted);
+  cursor: help;
+  user-select: none;
+}
+
+/* The bubble that appears on hover */
+.tooltipBubble {
+  position: absolute;
+  bottom: calc(100% + 8px);
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--ink);
+  color: #fff;
+  font-size: 12px;
+  line-height: 1.5;
+  padding: 10px 12px;
+  border-radius: 8px;
+  width: 260px;
+  z-index: 100;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+  visibility: hidden;
+  opacity: 0;
+  transition: all 0.15s;
+  pointer-events: none;
+}
+
+/* Show bubble on hover */
+.tooltipWrapper:hover .tooltipBubble {
+  visibility: visible;
+  opacity: 1;
+}
