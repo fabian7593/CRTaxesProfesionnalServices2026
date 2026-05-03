@@ -5,11 +5,26 @@
   margin-bottom: 12px;
 }
 
+/* Mobile: allow tooltips to overflow the scroll wrapper */
+@media (max-width: 840px) {
+  .scrollWrapper {
+    overflow: visible;
+  }
+}
+
 /* Breakdown table */
 .breakdownTable {
   width: 100%;
   border-collapse: collapse;
   font-size: 13px;
+  position: relative;
+}
+
+/* Mobile: ensure table doesn't clip tooltips */
+@media (max-width: 840px) {
+  .breakdownTable {
+    overflow: visible;
+  }
 }
 
 /* Section header row */
@@ -123,6 +138,7 @@
 .labelCell {
   color: var(--ink3);
   position: relative;
+  overflow: visible;
 }
 
 .labelCell > * {

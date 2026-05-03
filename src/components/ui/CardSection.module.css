@@ -8,6 +8,13 @@
   margin-bottom: 14px;
 }
 
+/* Mobile: allow tooltips to overflow card */
+@media (max-width: 840px) {
+  .card {
+    overflow: visible;
+  }
+}
+
 /* Card title with decorative line */
 .cardTitle {
   font-size: 11px;
