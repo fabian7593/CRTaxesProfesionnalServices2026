@@ -7,6 +7,25 @@
   margin-bottom: 14px;
   border: 1px solid var(--line);
   gap: 4px;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+/* Mobile: ensure tabs don't overflow */
+@media (max-width: 840px) {
+  .regimeTabs {
+    width: 100%;
+    max-width: 100%;
+  }
+  
+  .regimeTab {
+    min-width: 0;
+    flex: 1 1 0;
+  }
+  
+  .regimeSubtitle {
+    font-size: 9px;
+  }
 }
 
 /* Individual tab button */
