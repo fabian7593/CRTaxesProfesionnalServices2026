@@ -1,4 +1,4 @@
-import type { ISRResult } from '@/types/fiscal.types'
+import type { ISRResult, CalculatorRegimeType } from '@/types/fiscal.types'
 import { Modal } from '@/components/ui/Modal'
 import { formatColones as fC } from '@/utils/formatters'
 import styles from './TramoModal.module.css'
@@ -7,6 +7,7 @@ interface TramoModalProps {
   isOpen: boolean
   onClose: () => void
   isrResult: ISRResult
+  regime: CalculatorRegimeType
 }
 
 /**
@@ -20,19 +21,47 @@ interface TramoModalProps {
  * 
  * Active brackets (where base > 0) are highlighted.
  * The total ISR amount is shown at the bottom.
+ * 
+ * For mixed regime (salary + independent income), shows an explanation
+ * about why there is no exempt bracket for independent income.
  */
-export function TramoModal({ isOpen, onClose, isrResult }: TramoModalProps) {
+export function TramoModal({ isOpen, onClose, isrResult, regime }: TramoModalProps) {
   const { total, detalles } = isrResult
 
   // Find the maximum base amount to scale the bars proportionally
   const maxBase = Math.max(...detalles.map((d) => d.base), 1)
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} title="Tramos ISR 2026" maxWidth="680px">
+    <Modal 
+      isOpen={isOpen} 
+      onClose={onClose} 
+      title="Tramos ISR 2026" 
+      subtitle="Decreto Ejecutivo 45333-H · Ley del Impuesto sobre la Renta (arts. 15, 23, 28 y 33)"
+      maxWidth="680px"
+    >
       <div className={styles.modalIsrAlert}>
         <strong>ℹ️ Impuesto escalonado:</strong> El ISR en Costa Rica es progresivo. Cada tramo
         tributa solo sobre el monto que cae dentro de ese rango, no sobre el total.
       </div>
+
+      {/* Mixed regime explanation - only show for mixto regime */}
+      {regime === 'mixto' && (
+        <div className={styles.modalIsrMixedExplanation}>
+          <strong>⚠️ Régimen mixto (asalariado + independiente):</strong>
+          <p>
+            Según el artículo 15 inciso c) de la Ley del ISR, una persona solo puede tener un 
+            mínimo exento. Si recibís salario y además ingresos como independiente, el tramo 
+            exento ya fue consumido por el salario en el impuesto al salario que te retiene 
+            tu patrono.
+          </p>
+          <p>
+            Por lo tanto, cuando declarás el D-101 como persona física con actividad lucrativa, 
+            los ingresos de servicios profesionales se suman al salario para ubicarte en el 
+            tramo correcto, pero el exento ya fue aprovechado. Los honorarios tributan en el 
+            tramo que corresponda según la suma total de ambos ingresos (salario + servicios).
+          </p>
+        </div>
+      )}
 
       {/* Column headers */}
       <div className={styles.modalIsrHeader}>

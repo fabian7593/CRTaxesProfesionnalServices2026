@@ -88,7 +88,7 @@ export function Footer() {
                     </svg>
                   </a>
                   <a
-                    href="https://wa.me/50688170090"
+                    href="https://wa.me/50683461166"
                     target="_blank"
                     rel="noopener noreferrer"
                     className={`${styles.footerSocialLink} ${styles.footerSocialLinkWhatsapp}`}

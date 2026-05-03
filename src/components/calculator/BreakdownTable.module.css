@@ -20,20 +20,48 @@
   text-transform: uppercase;
   letter-spacing: 0.05em;
   color: var(--muted);
+  position: relative;
 }
 
 .sectionHeader td {
-  padding: 8px 12px;
-  border-top: 1px solid var(--line);
+  padding: 10px 12px;
+  border-top: 2px solid var(--line);
+  position: relative;
+}
+
+/* Section header variants with specific colors */
+.sectionHeaderIngresos {
+  background: linear-gradient(135deg, var(--emerald-bg) 0%, var(--surface) 100%);
+}
+
+.sectionHeaderIngresos td {
+  color: var(--emerald-mid);
+  border-top: 4px solid var(--emerald);
+}
+
+.sectionHeaderDeducciones {
+  background: linear-gradient(135deg, var(--cobalt-bg) 0%, var(--surface) 100%);
+}
+
+.sectionHeaderDeducciones td {
+  color: var(--cobalt);
+  border-top: 4px solid var(--cobalt);
+}
+
+.sectionHeaderImpuestos {
+  background: linear-gradient(135deg, var(--amber-bg) 0%, var(--surface) 100%);
+}
+
+.sectionHeaderImpuestos td {
+  color: var(--amber-mid);
+  border-top: 4px solid var(--amber);
 }
 
 /* Regular breakdown row */
 .breakdownRow td {
-  padding: 12px;
+  padding: 18px 12px;
   border-bottom: 1px solid var(--line);
   vertical-align: middle;
-  min-height: 60px;
-  height: 60px;
 }
 
 /* Subtotal row */
@@ -43,36 +71,63 @@
 }
 
 .subtotalRow td {
-  padding: 12px;
+  padding: 18px 12px;
   border-bottom: 1px solid var(--line);
   vertical-align: middle;
-  min-height: 60px;
-  height: 60px;
+}
+
+/* Subtotal row with cobalt background (for Renta neta imponible) */
+.subtotalRowCobalt {
+  background: var(--cobalt-bg);
+  font-weight: 500;
+  border: 1px solid rgba(59, 91, 219, 0.2);
+}
+
+.subtotalRowCobalt td {
+  padding: 18px 12px;
+  border-bottom: 1px solid rgba(59, 91, 219, 0.3);
+  vertical-align: middle;
+}
+
+/* Subtotal row with white background (for ISR a pagar) */
+.subtotalRowWhite {
+  background: var(--surface);
+  font-weight: 500;
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+}
+
+.subtotalRowWhite td {
+  padding: 18px 12px;
+  border-bottom: 1px solid var(--line);
+  vertical-align: middle;
 }
 
 /* Total row */
 .totalRow {
-  background: var(--ink);
-  color: #fff;
+  background: rgba(0, 200, 150, 0.15);
+  color: var(--emerald-mid);
   font-weight: 600;
-  font-size: 14px;
+  font-size: 15px;
+  border: 1px solid rgba(0, 200, 150, 0.3);
+  border-radius: 8px;
 }
 
 .totalRow td {
-  padding: 14px 12px;
-  border-bottom: 1px solid var(--line);
+  padding: 20px 12px;
+  border-bottom: none;
   vertical-align: middle;
-  min-height: 64px;
-  height: 64px;
 }
 
 /* Label cell */
 .labelCell {
-  display: flex;
-  align-items: center;
-  gap: 6px;
   color: var(--ink3);
   position: relative;
+}
+
+.labelCell > * {
+  display: inline;
+  vertical-align: middle;
 }
 
 .totalRow .labelCell,
@@ -81,18 +136,20 @@
 }
 
 .totalRow .labelCell {
-  color: #fff;
+  color: var(--emerald-mid);
 }
 
 /* Icon in label */
 .icon {
   font-size: 14px;
-  flex-shrink: 0;
+  margin-right: 6px;
+  display: inline-block;
+  vertical-align: middle;
 }
 
 .labelText {
-  flex: 1;
-  min-width: 0;
+  display: inline;
+  vertical-align: middle;
 }
 
 /* Value cell - contains both CRC and USD stacked */
@@ -115,13 +172,23 @@
 }
 
 .totalRow .amountCRC {
-  color: #fff;
-  font-size: 14px;
-  font-weight: 600;
+  color: var(--emerald-mid);
+  font-size: 16px;
+  font-weight: 700;
 }
 
 .subtotalRow .amountCRC {
   font-weight: 600;
+}
+
+.subtotalRowCobalt .amountCRC {
+  font-weight: 600;
+  color: var(--cobalt);
+}
+
+.subtotalRowWhite .amountCRC {
+  font-weight: 600;
+  color: var(--ink);
 }
 
 /* USD amount (bottom line) */
@@ -133,7 +200,8 @@
 }
 
 .totalRow .amountUSD {
-  color: rgba(255, 255, 255, 0.7);
+  color: var(--emerald-mid);
+  opacity: 0.8;
 }
 
 /* Color classes for amounts */

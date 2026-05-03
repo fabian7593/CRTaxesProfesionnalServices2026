@@ -191,6 +191,14 @@ export function useFiscalCalculator(
     // ========================================================================
     const breakdownRows: BreakdownRow[] = [];
 
+    // ── INGRESOS ──────────────────────────────────────────────────────────
+    breakdownRows.push({
+      label: 'INGRESOS',
+      valueCRC: 0,
+      valueUSD: 0,
+      type: 'section',
+    });
+
     // Row 1: SP bruto (annual gross income)
     breakdownRows.push({
       label: `SP bruto (${calculatorState.billedMonths} meses × ${calculatorState.currency === 'usd' ? formatDollars(calculatorState.monthlyRate) : formatColones(calculatorState.monthlyRate)})`,
@@ -199,6 +207,14 @@ export function useFiscalCalculator(
       type: 'item',
       colorClass: 'pos',
       tooltip: 'Ingreso total del año por servicios profesionales antes de cualquier deducción o impuesto.',
+    });
+
+    // ── DEDUCCIONES ───────────────────────────────────────────────────────
+    breakdownRows.push({
+      label: 'DEDUCCIONES PARA ISR',
+      valueCRC: 0,
+      valueUSD: 0,
+      type: 'section',
     });
 
     // Row 2: Deduction (fictitious or real expenses)
@@ -211,6 +227,16 @@ export function useFiscalCalculator(
         colorClass: 'neg',
         tooltip: 'La ley permite deducir automáticamente el 25% del ingreso bruto sin necesidad de presentar facturas ni comprobantes. Es la opción más simple para servicios digitales.',
       });
+      
+      // CCSS deductible note (only if using fictitious deduction)
+      breakdownRows.push({
+        label: `CCSS anual (cat. ${ccssResult.category.cat} · ${formatPercentage(ccssResult.totalRate)})`,
+        valueCRC: -ccssDeduction,
+        valueUSD: -ccssDeduction / calculatorState.exchangeRate,
+        type: 'item',
+        colorClass: 'neg',
+        tooltip: 'Con deducción ficta del 25%, podés deducir adicionalmente la CCSS anual completa según art. 8 inc. b) Ley 7092. Esta CCSS también se paga (ver sección Impuestos).',
+      });
     } else {
       breakdownRows.push({
         label: 'Gastos reales documentados',
@@ -218,31 +244,19 @@ export function useFiscalCalculator(
         valueUSD: -realExpensesDeduction / calculatorState.exchangeRate,
         type: 'item',
         colorClass: 'neg',
-        tooltip: 'Gastos documentados con facturas electrónicas válidas.',
+        tooltip: 'Gastos documentados con facturas electrónicas válidas. Con gastos reales NO podés deducir la CCSS adicionalmente.',
       });
     }
 
-    // Row 3: Voluntary pension (if enabled)
+    // Row 4: Voluntary pension (if enabled)
     if (voluntaryPensionDeduction > 0) {
       breakdownRows.push({
-        label: 'Pensión voluntaria deducible 10% (art. 71 Ley 7983)',
+        label: '+ Pensión voluntaria 10% (art. 71 Ley 7983)',
         valueCRC: -voluntaryPensionDeduction,
         valueUSD: -voluntaryPensionDeduction / calculatorState.exchangeRate,
         type: 'item',
         colorClass: 'neg',
         tooltip: 'Aporte voluntario a una OPC (BAC Pensiones, BCR, BN Vital, Popular). Deducible hasta el 10% del ingreso bruto anual según art. 71 Ley 7983. Reduce la base imponible del ISR.',
-      });
-    }
-
-    // Row 4: CCSS deductible (only if using fictitious deduction)
-    if (calculatorState.deductionType === 'ficto') {
-      breakdownRows.push({
-        label: 'CCSS TI deducible adicional (art. 8 inc. b)',
-        valueCRC: -ccssDeduction,
-        valueUSD: -ccssDeduction / calculatorState.exchangeRate,
-        type: 'item',
-        colorClass: 'neg',
-        tooltip: 'Si usás deducción ficta del 25%, podés deducir adicionalmente la CCSS anual completa según art. 8 inc. b) Ley 7092. No aplica si usás gastos reales.',
       });
     }
 
@@ -256,18 +270,37 @@ export function useFiscalCalculator(
       tooltip: 'Base sobre la cual se calculan los tramos del ISR. Es el ingreso bruto menos todas las deducciones permitidas.',
     });
 
-    // Row: ISR escalonado
+    // ── IMPUESTOS Y PAGOS ─────────────────────────────────────────────────
     breakdownRows.push({
-      label: 'ISR escalonado (tramos 2026)',
-      valueCRC: -isrResult.total,
-      valueUSD: -isrResult.total / calculatorState.exchangeRate,
-      type: 'item',
-      colorClass: 'neg',
-      tooltip: 'Impuesto calculado aplicando los tramos escalonados 2026 (0%, 10%, 15%, 20%, 25%) sobre la renta neta.',
+      label: 'IMPUESTOS Y PAGOS',
+      valueCRC: 0,
+      valueUSD: 0,
+      type: 'section',
     });
 
-    // Row: Tax credits (if any)
+    // Row: CCSS annual (payment - this is what you actually pay)
+    breakdownRows.push({
+      label: `CCSS anual (cat. ${ccssResult.category.cat} · ${formatColones(ccssResult.effectiveIncome)}/mes × 12)`,
+      valueCRC: -annualCcssContribution,
+      valueUSD: -annualCcssContribution / calculatorState.exchangeRate,
+      type: 'item',
+      colorClass: 'neg',
+      tooltip: 'Cuota anual obligatoria a la CCSS como trabajador independiente. Se calcula según tu categoría (1-5) basada en el ingreso bruto mensual. Este es el monto que pagás realmente.',
+    });
+
+    // Row: ISR - show breakdown only if there are tax credits
     if (totalTaxCredits > 0) {
+      // Show ISR bruto
+      breakdownRows.push({
+        label: 'ISR bruto (tramos 2026)',
+        valueCRC: -isrResult.total,
+        valueUSD: -isrResult.total / calculatorState.exchangeRate,
+        type: 'item',
+        colorClass: 'neg',
+        tooltip: 'Impuesto calculado aplicando los tramos escalonados 2026 (0%, 10%, 15%, 20%, 25%) sobre la renta neta.',
+      });
+
+      // Show tax credits
       breakdownRows.push({
         label: `Créditos fiscales (${calculatorState.numberOfChildren} hijo(s)${calculatorState.hasSpouse ? ' + cónyuge' : ''})`,
         valueCRC: totalTaxCredits,
@@ -276,32 +309,34 @@ export function useFiscalCalculator(
         colorClass: 'pos',
         tooltip: 'Créditos fiscales por hijos y cónyuge que reducen el ISR a pagar.',
       });
+
+      // Show ISR neto as subtotal
+      breakdownRows.push({
+        label: 'ISR a pagar',
+        valueCRC: -finalIncomeTax,
+        valueUSD: -finalIncomeTax / calculatorState.exchangeRate,
+        type: 'item',
+        icon: '',
+        colorClass: 'neg',
+        tooltip: 'ISR bruto menos créditos fiscales. Este es el monto que pagás a Hacienda mediante el D-101.',
+      });
+    } else {
+      // No tax credits - show only ISR a pagar
+      breakdownRows.push({
+        label: 'ISR a pagar',
+        valueCRC: -finalIncomeTax,
+        valueUSD: -finalIncomeTax / calculatorState.exchangeRate,
+        type: 'item',
+        icon: '',
+        colorClass: 'neg',
+        tooltip: 'Impuesto calculado aplicando los tramos escalonados 2026 (0%, 10%, 15%, 20%, 25%) sobre la renta neta. Este es el monto que pagás a Hacienda mediante el D-101.',
+      });
     }
 
-    // Subtotal: ISR definitivo
+    // ── RESULTADO FINAL ───────────────────────────────────────────────────
+    // Total: Ingreso Neto Anual
     breakdownRows.push({
-      label: '= ISR definitivo',
-      valueCRC: -finalIncomeTax,
-      valueUSD: -finalIncomeTax / calculatorState.exchangeRate,
-      type: 'subtotal',
-      icon: '💰',
-      colorClass: 'neg',
-      tooltip: 'ISR bruto menos créditos fiscales. Este es el monto que pagás a Hacienda mediante el D-101.',
-    });
-
-    // Row: CCSS annual
-    breakdownRows.push({
-      label: `CCSS TI (cat. ${ccssResult.category.cat} · ${formatPercentage(ccssResult.totalRate)} · ${formatColones(ccssResult.effectiveIncome)}/mes × 12)`,
-      valueCRC: -annualCcssContribution,
-      valueUSD: -annualCcssContribution / calculatorState.exchangeRate,
-      type: 'item',
-      colorClass: 'neg',
-      tooltip: 'Cuota anual obligatoria a la CCSS como trabajador independiente. Se calcula según tu categoría (1-5) basada en el ingreso bruto mensual.',
-    });
-
-    // Subtotal: Neto anual en bolsillo
-    breakdownRows.push({
-      label: '= Neto anual en bolsillo',
+      label: '= Ingreso Neto Anual',
       valueCRC: annualNetIncome,
       valueUSD: annualNetIncome / calculatorState.exchangeRate,
       type: 'total',

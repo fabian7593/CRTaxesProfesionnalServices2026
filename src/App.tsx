@@ -242,6 +242,7 @@ function App() {
         isOpen={openModal === 'isr-tramos'}
         onClose={() => setOpenModal(null)}
         isrResult={fiscalResult.isrResult}
+        regime={calculatorState.regime}
       />
 
       <PensionFundsModal

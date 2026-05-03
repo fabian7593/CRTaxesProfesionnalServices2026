@@ -181,13 +181,13 @@
   "sliders": {
     "tarifa": {
       "usd": {
-        "min": 500,
+        "min": 200,
         "max": 12000,
         "step": 100,
         "default": 3800
       },
       "crc": {
-        "min": 200000,
+        "min": 100000,
         "max": 6000000,
         "step": 50000,
         "default": 1500000
