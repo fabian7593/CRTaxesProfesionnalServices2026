@@ -1,4 +1,4 @@
-import { useRef, type ReactNode } from 'react'
+import { useState, useEffect, type ReactNode } from 'react'
 import { Tooltip } from './Tooltip'
 import styles from './SliderField.module.css'
 
@@ -17,10 +17,8 @@ interface SliderFieldProps {
 
 /**
  * Custom slider field with visual track fill and formatted value display.
- * The actual range input is positioned over the custom track with opacity 0.
- * 
- * Mobile optimization: Uses touch event detection to distinguish between
- * vertical scroll and horizontal slider interaction.
+ * On mobile (touch devices), clicking the slider opens a modal for precise numeric input.
+ * On desktop, the slider works normally.
  */
 export function SliderField({
   id,
@@ -37,95 +35,174 @@ export function SliderField({
   // Calculate how far the slider fill bar should extend (0% to 100%)
   const fillPercentage = ((value - min) / (max - min)) * 100
 
-  // Touch tracking for mobile scroll vs slider detection
-  const touchStartRef = useRef<{ x: number; y: number; time: number } | null>(null)
-  const isSliderActiveRef = useRef(false)
+  // Detect if device has touch capability
+  const [isTouchDevice, setIsTouchDevice] = useState(false)
+  const [isModalOpen, setIsModalOpen] = useState(false)
+  const [inputValue, setInputValue] = useState(value.toString())
+
+  useEffect(() => {
+    // Check if device supports touch
+    const hasTouch = 'ontouchstart' in window || navigator.maxTouchPoints > 0
+    setIsTouchDevice(hasTouch)
+  }, [])
+
+  // Update input value when slider value changes externally
+  useEffect(() => {
+    setInputValue(value.toString())
+  }, [value])
 
   /**
-   * Handle touch start - record initial position
+   * Handle slider track click on touch devices - open modal
    */
-  const handleTouchStart = (event: React.TouchEvent<HTMLInputElement>) => {
-    const touch = event.touches[0]
-    touchStartRef.current = {
-      x: touch.clientX,
-      y: touch.clientY,
-      time: Date.now(),
-    }
-    isSliderActiveRef.current = false
-  }
-
-  /**
-   * Handle touch move - determine if this is a scroll or slider interaction
-   * Only activate slider if movement is predominantly horizontal
-   */
-  const handleTouchMove = (event: React.TouchEvent<HTMLInputElement>) => {
-    if (!touchStartRef.current) return
-
-    const touch = event.touches[0]
-    const deltaX = Math.abs(touch.clientX - touchStartRef.current.x)
-    const deltaY = Math.abs(touch.clientY - touchStartRef.current.y)
-    const totalMovement = deltaX + deltaY
-
-    // Require minimum movement to avoid accidental activation
-    if (totalMovement < 5) return
-
-    // Calculate direction: if >60% horizontal, it's a slider interaction
-    const horizontalRatio = deltaX / totalMovement
-
-    if (horizontalRatio > 0.6) {
-      // This is a horizontal gesture - activate slider
-      isSliderActiveRef.current = true
-    } else {
-      // This is a vertical gesture - allow scroll, prevent slider
-      if (!isSliderActiveRef.current) {
-        event.preventDefault()
-      }
+  const handleTrackClick = () => {
+    if (isTouchDevice) {
+      setInputValue(value.toString())
+      setIsModalOpen(true)
     }
   }
 
   /**
-   * Handle touch end - reset tracking
+   * Handle modal confirm - validate and apply new value
    */
-  const handleTouchEnd = () => {
-    touchStartRef.current = null
-    isSliderActiveRef.current = false
+  const handleConfirm = () => {
+    const numValue = Number(inputValue)
+    
+    // Validate input
+    if (isNaN(numValue)) {
+      setInputValue(value.toString())
+      setIsModalOpen(false)
+      return
+    }
+
+    // Clamp to min/max
+    const clampedValue = Math.max(min, Math.min(max, numValue))
+    
+    // Round to nearest step
+    const steppedValue = Math.round(clampedValue / step) * step
+    
+    onChange(steppedValue)
+    setIsModalOpen(false)
+  }
+
+  /**
+   * Handle modal cancel - reset and close
+   */
+  const handleCancel = () => {
+    setInputValue(value.toString())
+    setIsModalOpen(false)
+  }
+
+  /**
+   * Handle input change - only allow numbers
+   */
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newValue = e.target.value
+    // Allow empty string, numbers, and one decimal point
+    if (newValue === '' || /^\d*\.?\d*$/.test(newValue)) {
+      setInputValue(newValue)
+    }
+  }
+
+  /**
+   * Handle Enter key in input
+   */
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter') {
+      handleConfirm()
+    } else if (e.key === 'Escape') {
+      handleCancel()
+    }
   }
 
   return (
-    <div className={styles.sliderRow}>
-      {/* Label + current value display */}
-      <div className={styles.sliderTop}>
-        <label className={styles.sliderLabel} htmlFor={id}>
-          {label}
-          {tooltip && <Tooltip content={tooltip} />}
-        </label>
-        <span className={styles.sliderValue}>{valueDisplay}</span>
+    <>
+      <div className={styles.sliderRow}>
+        {/* Label + current value display */}
+        <div className={styles.sliderTop}>
+          <label className={styles.sliderLabel} htmlFor={id}>
+            {label}
+            {tooltip && <Tooltip content={tooltip} />}
+          </label>
+          <span className={styles.sliderValue}>{valueDisplay}</span>
+        </div>
+
+        {/* Custom track with fill bar underneath the real input */}
+        <div 
+          className={`${styles.sliderTrack} ${isTouchDevice ? styles.sliderTrackTouchable : ''}`}
+          onClick={handleTrackClick}
+        >
+          <div className={styles.sliderFill} style={{ width: `${fillPercentage}%` }} />
+          <input
+            id={id}
+            type="range"
+            min={min}
+            max={max}
+            step={step}
+            value={value}
+            onChange={(event) => onChange(Number(event.target.value))}
+            aria-label={label}
+            className={isTouchDevice ? styles.sliderDisabled : ''}
+            disabled={isTouchDevice}
+            tabIndex={isTouchDevice ? -1 : 0}
+          />
+        </div>
+
+        {/* Min / Max hints */}
+        <div className={styles.sliderHints}>
+          <span>{hints[0]}</span>
+          <span>{hints[1]}</span>
+        </div>
       </div>
 
-      {/* Custom track with fill bar underneath the real input */}
-      <div className={styles.sliderTrack}>
-        <div className={styles.sliderFill} style={{ width: `${fillPercentage}%` }} />
-        <input
-          id={id}
-          type="range"
-          min={min}
-          max={max}
-          step={step}
-          value={value}
-          onChange={(event) => onChange(Number(event.target.value))}
-          onTouchStart={handleTouchStart}
-          onTouchMove={handleTouchMove}
-          onTouchEnd={handleTouchEnd}
-          aria-label={label}
-        />
-      </div>
+      {/* Modal for touch devices */}
+      {isTouchDevice && isModalOpen && (
+        <div className={styles.modalOverlay} onClick={handleCancel}>
+          <div className={styles.modalBox} onClick={(e) => e.stopPropagation()}>
+            <div className={styles.modalHeader}>
+              <h3 className={styles.modalTitle}>{label}</h3>
+            </div>
+            
+            <div className={styles.modalContent}>
+              <div className={styles.inputGroup}>
+                <label className={styles.inputLabel}>Ingresá el valor</label>
+                <input
+                  type="text"
+                  inputMode="decimal"
+                  className={styles.numericInput}
+                  value={inputValue}
+                  onChange={handleInputChange}
+                  onKeyDown={handleKeyDown}
+                  autoFocus
+                  placeholder={`${min} - ${max}`}
+                />
+                <div className={styles.inputHint}>
+                  Rango: {hints[0]} - {hints[1]}
+                </div>
+              </div>
+            </div>
 
-      {/* Min / Max hints */}
-      <div className={styles.sliderHints}>
-        <span>{hints[0]}</span>
-        <span>{hints[1]}</span>
-      </div>
-    </div>
+            <div className={styles.modalActions}>
+              <button 
+                type="button"
+                className={styles.btnCancel} 
+                onClick={handleCancel}
+              >
+                Cancelar
+              </button>
+              <button 
+                type="button"
+                className={styles.btnConfirm} 
+                onClick={handleConfirm}
+              >
+                Aceptar
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+    </>
   )
 }
+
+
 
