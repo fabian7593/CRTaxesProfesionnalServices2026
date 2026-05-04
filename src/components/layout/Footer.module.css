@@ -235,8 +235,8 @@
 
 /* Copied state for email */
 .footerSocialLinkCopied::after {
-  content: '✓ Copiado!' !important;
   background: var(--emerald) !important;
+  color: #fff !important;
   opacity: 1 !important;
   transform: translateX(-50%) scale(1) !important;
 }
@@ -262,7 +262,8 @@
 
 .footerDocsLink,
 .footerRepoLink,
-.footerFacturaLink {
+.footerFacturaLink,
+.footerContactLink {
   display: inline-flex;
   align-items: center;
   gap: 7px;
@@ -276,11 +277,14 @@
   text-decoration: none;
   transition: all 0.2s;
   font-family: var(--sans);
+  cursor: pointer;
+  position: relative;
 }
 
 .footerDocsLink:hover,
 .footerRepoLink:hover,
-.footerFacturaLink:hover {
+.footerFacturaLink:hover,
+.footerContactLink:hover {
   background: rgba(0, 200, 150, 0.15);
   border-color: var(--emerald);
   color: var(--emerald);
@@ -289,15 +293,84 @@
 
 .footerDocsLink svg,
 .footerRepoLink svg,
-.footerFacturaLink svg {
+.footerFacturaLink svg,
+.footerContactLink svg {
   flex-shrink: 0;
   opacity: 0.8;
 }
 
 .footerDocsLink:hover svg,
 .footerRepoLink:hover svg,
-.footerFacturaLink:hover svg {
+.footerFacturaLink:hover svg,
+.footerContactLink:hover svg {
   opacity: 1;
+}
+
+/* Copied state for contact email button */
+.footerContactLinkCopied {
+  background: var(--emerald) !important;
+  border-color: var(--emerald) !important;
+  color: #fff !important;
+}
+
+/* Tooltip for contact button */
+.footerContactLink::after {
+  content: attr(title);
+  position: absolute;
+  bottom: calc(100% + 8px);
+  left: 50%;
+  transform: translateX(-50%) scale(0.9);
+  background: rgba(255, 255, 255, 0.95);
+  color: var(--ink);
+  padding: 6px 10px;
+  border-radius: 6px;
+  font-size: 10px;
+  font-family: var(--mono);
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: all 0.2s;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  z-index: 100;
+}
+
+.footerContactLink::before {
+  content: '';
+  position: absolute;
+  bottom: calc(100% + 2px);
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 0;
+  border-left: 5px solid transparent;
+  border-right: 5px solid transparent;
+  border-top: 5px solid rgba(255, 255, 255, 0.95);
+  opacity: 0;
+  pointer-events: none;
+  transition: all 0.2s;
+  z-index: 100;
+}
+
+.footerContactLink:hover::after {
+  opacity: 1;
+  transform: translateX(-50%) scale(1);
+}
+
+.footerContactLink:hover::before {
+  opacity: 1;
+}
+
+/* Override tooltip when copied */
+.footerContactLinkCopied::after {
+  background: var(--emerald) !important;
+  color: #fff !important;
+  opacity: 1 !important;
+  transform: translateX(-50%) scale(1) !important;
+}
+
+.footerContactLinkCopied::before {
+  border-top-color: var(--emerald) !important;
+  opacity: 1 !important;
 }
 
 .footerLicense {

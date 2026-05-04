@@ -8,9 +8,10 @@ import styles from './Footer.module.css'
  */
 export function Footer() {
   const [emailCopied, setEmailCopied] = useState(false)
+  const [contactEmailCopied, setContactEmailCopied] = useState(false)
 
   /**
-   * Copies email to clipboard with visual feedback.
+   * Copies personal email to clipboard with visual feedback.
    * Shows checkmark and "Copiado!" tooltip for 2 seconds.
    */
   const copyEmail = async () => {
@@ -22,6 +23,28 @@ export function Footer() {
         await navigator.clipboard.writeText(email)
         setEmailCopied(true)
         setTimeout(() => setEmailCopied(false), 2000)
+      } catch (error) {
+        // Fallback to mailto if clipboard fails
+        window.location.href = `mailto:${email}`
+      }
+    } else {
+      // Fallback for browsers without clipboard API
+      window.location.href = `mailto:${email}`
+    }
+  }
+
+  /**
+   * Copies contact email to clipboard with visual feedback.
+   */
+  const copyContactEmail = async () => {
+    const email = 'despachocontablecs@outlook.com'
+
+    // Try to use clipboard API
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      try {
+        await navigator.clipboard.writeText(email)
+        setContactEmailCopied(true)
+        setTimeout(() => setContactEmailCopied(false), 2000)
       } catch (error) {
         // Fallback to mailto if clipboard fails
         window.location.href = `mailto:${email}`
@@ -101,8 +124,9 @@ export function Footer() {
                   <button
                     onClick={copyEmail}
                     className={`${styles.footerSocialLink} ${styles.footerSocialLinkEmail} ${emailCopied ? styles.footerSocialLinkCopied : ''}`}
-                    title={emailCopied ? '✓ Copiado!' : 'Email'}
+                    title="fabian7593@gmail.com"
                     type="button"
+                    aria-label={emailCopied ? 'Email copiado' : 'Copiar email personal'}
                   >
                     <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
                       <path d="M.05 3.555A2 2 0 012 2h12a2 2 0 011.95 1.555L8 8.414.05 3.555zM0 4.697v7.104l5.803-3.558L0 4.697zM6.761 8.83l-6.57 4.027A2 2 0 002 14h12a2 2 0 001.808-1.144l-6.57-4.027L8 9.586l-1.239-.757zm3.436-.586L16 11.801V4.697l-5.803 3.546z" />
@@ -117,6 +141,7 @@ export function Footer() {
         {/* Bottom section */}
         <div className={styles.footerBottom}>
           <div className={styles.footerLinks}>
+            {/* 1. Documentación */}
             <a
               href="https://github.com/fabian7593/CRTaxes2026/blob/main/README.md"
               target="_blank"
@@ -128,17 +153,8 @@ export function Footer() {
               </svg>
               Documentación
             </a>
-            <a
-              href="https://github.com/fabian7593/CRTaxes2026"
-              target="_blank"
-              rel="noopener noreferrer"
-              className={styles.footerRepoLink}
-            >
-              <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
-                <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z" />
-              </svg>
-              GitHub Repo
-            </a>
+
+            {/* 2. Facturación Electrónica CR */}
             <a
               href="https://orioltech.com/"
               target="_blank"
@@ -149,7 +165,34 @@ export function Footer() {
                 <path d="M4 0a2 2 0 00-2 2v12a2 2 0 002 2h8a2 2 0 002-2V2a2 2 0 00-2-2H4zm0 1h8a1 1 0 011 1v12a1 1 0 01-1 1H4a1 1 0 01-1-1V2a1 1 0 011-1z" />
                 <path d="M2 5a1 1 0 011-1h10a1 1 0 011 1v1a1 1 0 01-1 1H3a1 1 0 01-1-1V5zm0 4a1 1 0 011-1h10a1 1 0 011 1v1a1 1 0 01-1 1H3a1 1 0 01-1-1V9z" />
               </svg>
-              Herramienta Facturacion Electronica CR
+              Facturación Electrónica CR
+            </a>
+
+            {/* 3. Email de Contacto */}
+            <button
+              onClick={copyContactEmail}
+              className={`${styles.footerContactLink} ${contactEmailCopied ? styles.footerContactLinkCopied : ''}`}
+              title="despachocontablecs@outlook.com"
+              type="button"
+              aria-label={contactEmailCopied ? 'Email copiado' : 'Copiar email de contacto'}
+            >
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                <path d="M.05 3.555A2 2 0 012 2h12a2 2 0 011.95 1.555L8 8.414.05 3.555zM0 4.697v7.104l5.803-3.558L0 4.697zM6.761 8.83l-6.57 4.027A2 2 0 002 14h12a2 2 0 001.808-1.144l-6.57-4.027L8 9.586l-1.239-.757zm3.436-.586L16 11.801V4.697l-5.803 3.546z" />
+              </svg>
+              {contactEmailCopied ? '✓ Copiado!' : 'Despacho Contador'}
+            </button>
+
+            {/* 4. GitHub Repo */}
+            <a
+              href="https://github.com/fabian7593/CRTaxes2026"
+              target="_blank"
+              rel="noopener noreferrer"
+              className={styles.footerRepoLink}
+            >
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z" />
+              </svg>
+              GitHub Repo
             </a>
           </div>
           <div className={styles.footerLicense}>MIT LICENSE • OPEN SOURCE</div>

@@ -11,6 +11,7 @@ import { CcssTablesModal } from '@/components/ccss/CcssTablesModal'
 import { RiesgoCcssModal } from '@/components/ccss/RiesgoCcssModal'
 import { PensionFundsModal } from '@/components/ccss/PensionFundsModal'
 import { TramoModal } from '@/components/calculator/TramoModal'
+import { ScrollFab } from '@/components/ui/ScrollFab'
 
 /**
  * Main App component - orchestrates the entire calculator application.
@@ -175,6 +176,9 @@ function App() {
           />
         }
       />
+
+      {/* Floating Action Button for mobile scroll navigation */}
+      <ScrollFab />
 
       {/* Modals - rendered conditionally based on openModal state */}
       <CcssTablesModal

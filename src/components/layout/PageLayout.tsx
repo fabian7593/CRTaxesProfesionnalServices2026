@@ -1,5 +1,6 @@
 import type { ReactNode } from 'react'
 import { Hero } from './Hero'
+import { DisclaimerBanner } from './DisclaimerBanner'
 import { Footer } from './Footer'
 import styles from './PageLayout.module.css'
 
@@ -19,6 +20,8 @@ export function PageLayout({ left, right }: PageLayoutProps) {
       <Hero />
 
       <main className={styles.mainContent}>
+        <DisclaimerBanner />
+        
         <div className={styles.twoCol}>
           <div className={styles.leftPanel}>{left}</div>
           <div className={styles.rightPanel}>{right}</div>

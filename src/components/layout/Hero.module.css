@@ -2,7 +2,7 @@
 .hero {
   background: var(--ink);
   color: #fff;
-  padding: 28px 0 22px;
+  padding: 28px 0 28px;
   position: relative;
   overflow: hidden;
   margin-bottom: 0;

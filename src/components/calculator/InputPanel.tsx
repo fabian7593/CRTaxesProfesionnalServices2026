@@ -62,7 +62,7 @@ export function InputPanel({
       />
 
       {/* Card 1: Moneda e Ingreso (Task 12.1.2) */}
-      <CardSection title="Moneda e Ingreso" icon="💰" iconVariant="g">
+      <CardSection title="Moneda e Ingreso" icon="💰" iconVariant="g" id="moneda-ingreso">
         <CurrencySelector
           value={state.currency}
           onChange={(currency) => onStateChange({ currency })}
