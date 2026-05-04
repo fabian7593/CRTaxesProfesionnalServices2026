@@ -8,7 +8,7 @@
 
 **Calculadora completa de impuestos y cargas sociales para trabajadores independientes en Costa Rica**
 
-[Reportar Bug](../../issues) • [Solicitar Feature](../../issues)
+[Servicios contables](mailto:despachocontablecs@outlook.com) • [Servicios de facturación electrónica](https://orioltech.com/) • [Reportar Bug](../../issues) • [Solicitar Feature](../../issues)
 
 </div>
 
@@ -245,7 +245,7 @@ Si aportás a un **Régimen Voluntario de Pensiones (RVP)** en una Operadora de 
 - **Formulario**: D-101 (Declaración Jurada del Impuesto Sobre la Renta)
 - **Plazo**: Antes del 15 de marzo del año siguiente
 - **Pagos parciales**: Se pueden hacer pagos trimestrales anticipados (D-110)
-- **Plataforma**: ATV (Administración Tributaria Virtual) - Ministerio de Hacienda
+- **Plataforma**: TRIBU-CR (Oficina Virtual OVI) - ovitribucr.hacienda.go.cr
 
 ---
 
@@ -260,7 +260,7 @@ El IVA es un impuesto del **13%** que se aplica sobre la venta de bienes y servi
 ✅ **Estás exento de IVA**
 - No cobrás el 13% al cliente
 - Emitís Factura Electrónica de Exportación v4.4 al 0%
-- El D-104 mensual igual es obligatorio (declaración en ceros)
+- El D-150 mensual igual es obligatorio (declaración en ceros)
 - Podés acumular crédito fiscal por compras locales con IVA
 
 
@@ -271,7 +271,7 @@ El IVA es un impuesto del **13%** que se aplica sobre la venta de bienes y servi
 ❌ **Debés cobrar IVA del 13%**
 - Cobrás ₡113 por cada ₡100 de servicio
 - El IVA **no sale de tu bolsillo** — lo paga el cliente
-- Debés trasladarlo a Hacienda mediante el **D-104 mensual**
+- Debés trasladarlo a Hacienda mediante el **D-150 mensual**
 - Plazo: Antes del día 15 de cada mes
 - Omitir la declaración genera multa de ₡231.100
 
@@ -280,7 +280,7 @@ El IVA es un impuesto del **13%** que se aplica sobre la venta de bienes y servi
 
 Desde 2018, la facturación electrónica es **obligatoria** en Costa Rica:
 
-- **Sistema**: Plataforma del Ministerio de Hacienda (ATV)
+- **Sistema**: Plataforma del Ministerio de Hacienda (TRIBU-CR)
 - **Tipos de factura**:
   - v4.3: Factura electrónica estándar (cliente local)
   - v4.4: Factura electrónica de exportación (cliente exterior)
@@ -322,11 +322,11 @@ Desde 2018, la facturación electrónica es **obligatoria** en Costa Rica:
 
 | Término | Significado | Descripción |
 |---------|-------------|-------------|
-| **ATV** | Administración Tributaria Virtual | Plataforma digital del Ministerio de Hacienda para trámites fiscales en línea |
+| **ATV** | Administración Tributaria Virtual | Plataforma digital del Ministerio de Hacienda para trámites fiscales en línea, reemplazada en octubre 2025 por TRIBU-CR |
 | **BMC** | Base Mínima de Cotización | Ingreso mínimo sobre el cual se debe cotizar a la CCSS (₡341.228/mes en 2026) |
 | **CCSS** | Caja Costarricense de Seguro Social | Institución que administra el sistema de seguridad social en Costa Rica |
 | **D-101** | Declaración Jurada del ISR | Formulario para declarar el Impuesto Sobre la Renta anualmente |
-| **D-104** | Declaración del IVA | Formulario mensual para declarar el Impuesto al Valor Agregado |
+| **D-150** | Declaración del IVA | Formulario mensual para declarar el Impuesto al Valor Agregado (reemplaza al D-104 desde octubre 2025 en TRIBU-CR) |
 | **D-110** | Declaración de Pagos Parciales ISR | Formulario para pagos trimestrales anticipados del ISR |
 | **FCL** | Fondo de Capitalización Laboral | Ahorro obligatorio para trabajadores con patrono (no aplica a TI) |
 | **ISR** | Impuesto Sobre la Renta | Impuesto anual sobre las ganancias netas de personas físicas y jurídicas |
@@ -337,7 +337,7 @@ Desde 2018, la facturación electrónica es **obligatoria** en Costa Rica:
 | **RVP** | Régimen Voluntario de Pensiones | Sistema de ahorro voluntario para complementar la pensión IVM |
 | **SEM** | Seguro de Enfermedad y Maternidad | Componente de la CCSS que cubre servicios de salud |
 | **TI** | Trabajador Independiente | Persona física que presta servicios sin relación de dependencia laboral |
-| **TRIBU-CR** | Tributación Digital Costa Rica | Sistema de cruce automático de información fiscal entre instituciones |
+| **TRIBU-CR** | Sistema Integrado de Gestión Tributaria de Costa Rica | Nueva plataforma tributaria del Ministerio de Hacienda que reemplazó al ATV en octubre 2025. Todos los trámites fiscales se realizan en ovitribucr.hacienda.go.cr |
 
 ### Términos Fiscales Clave
 
@@ -770,56 +770,6 @@ fU(amount) → "$3,000"
 fP(rate) → "19.11%"
 ```
 
-### Patrones de Código
-
-#### Hook de Cálculo
-
-```typescript
-export function useFiscalCalculator(
-  state: CalculatorState,
-  config: FiscalConfig
-): FiscalResult {
-  return useMemo(() => {
-    // 1. Convertir a CRC
-    const monthlyIncomeCRC = state.currency === 'usd'
-      ? state.monthlyRate * state.exchangeRate
-      : state.monthlyRate
-
-    // 2. Calcular CCSS
-    const ccssResult = getCat(monthlyIncomeCRC, config.ccss)
-
-    // 3. Calcular ISR
-    const isrResult = state.regime === 'solo'
-      ? calcISR(taxableIncome, config.isr.tramosPersonaFisica)
-      : calcISRMixto(taxableIncome, state.annualSalary, config.isr.tramosPersonaFisica)
-
-    // 4. Retornar resultados
-    return { ccssResult, isrResult, ... }
-  }, [state, config])
-}
-```
-
-#### Componente Controlado
-
-```typescript
-interface SliderFieldProps {
-  value: number
-  onChange: (newValue: number) => void
-  min: number
-  max: number
-  // ...
-}
-
-export function SliderField({ value, onChange, ... }: SliderFieldProps) {
-  return (
-    <input
-      type="range"
-      value={value}
-      onChange={(e) => onChange(Number(e.target.value))}
-    />
-  )
-}
-```
 
 ### Testing
 
@@ -1023,7 +973,7 @@ Esta calculadora es una **herramienta informativa y educativa**. Los cálculos s
 ## 🔗 Enlaces Útiles
 
 ### Instituciones Oficiales
-- [Ministerio de Hacienda](https://www.hacienda.go.cr) - Impuestos y ATV
+- [Ministerio de Hacienda](https://www.hacienda.go.cr) - Impuestos y TRIBU-CR
 - [CCSS](https://www.ccss.sa.cr) - Seguridad social
 - [SUPEN](https://www.supen.fi.cr) - Superintendencia de Pensiones
 - [La Gaceta](https://www.imprentanacional.go.cr/gaceta/) - Publicaciones oficiales
@@ -1034,13 +984,15 @@ Esta calculadora es una **herramienta informativa y educativa**. Los cálculos s
 - [Guía CCSS Trabajador Independiente](https://www.ccss.sa.cr/tramites_servicios)
 
 ### Herramientas Complementarias
-- [ATV - Administración Tributaria Virtual](https://atv.hacienda.go.cr)
+- [TRIBU-CR - Oficina Virtual OVI](https://ovitribucr.hacienda.go.cr)
 - [Facturación Electrónica Hacienda](https://www.hacienda.go.cr/contenido/14350-factura-electronica)
 - [Calculadora BCCR Tipo de Cambio](https://www.bccr.fi.cr)
 
-### Opciones de Facturación Electrónica
+### Opcion de Facturación Electrónica
 - [Orioltech](https://orioltech.com/) - Plataforma de facturación electrónica para Costa Rica
 
+### Servicios contables
+- [Despacho Contable](mailto:despachocontablecs@outlook.com)
 
 ---
 

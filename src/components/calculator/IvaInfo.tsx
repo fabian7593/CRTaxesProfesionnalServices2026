@@ -8,7 +8,7 @@ interface IvaInfoProps {
 
 /**
  * IVA information strip that shows different content based on client type.
- * Local clients: shows 13% IVA amount and D-104 note.
+ * Local clients: shows 13% IVA amount and D-150 note.
  * Export clients: shows exemption note and electronic invoice requirement.
  */
 export function IvaInfo({ clienteLocal, rateCRC }: IvaInfoProps) {
@@ -20,7 +20,7 @@ export function IvaInfo({ clienteLocal, rateCRC }: IvaInfoProps) {
         <strong>IVA 13%:</strong> {formatColones(ivaAmount)} mensuales que cobrás al cliente.{' '}
         <br />
         <span className={styles.ivaNote}>
-          Recordá presentar el D-104 mensualmente ante Hacienda.
+          Recordá presentar el D-150 mensualmente ante Hacienda.
         </span>
       </div>
     )
