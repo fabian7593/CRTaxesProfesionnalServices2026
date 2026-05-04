@@ -39,7 +39,9 @@
 
 /* The bubble that appears on hover - positioned upward to avoid scroll */
 .tooltipBubble {
+  /* Hidden by default */
   display: none;
+  visibility: hidden;
   position: absolute;
   left: 50%;
   bottom: calc(100% + 10px);
@@ -56,6 +58,8 @@
   box-shadow: var(--shadow-lg);
   pointer-events: none;
   white-space: normal;
+  /* NO transitions - instant hide/show */
+  transition: none !important;
 }
 
 /* Arrow pointing down from bubble */
@@ -73,8 +77,18 @@
 
 /* Show bubble on hover */
 .tooltipWrapper:hover .tooltipBubble,
-.tooltipWrapper[data-hovered] .tooltipBubble {
+.tooltipWrapper[data-hovered="true"] .tooltipBubble {
   display: block;
+  visibility: visible;
+}
+
+/* Force hide when not active - critical for mobile */
+.tooltipWrapper:not([data-hovered="true"]) .tooltipBubble {
+  display: none !important;
+  visibility: hidden !important;
+  /* Remove any positioning to prevent "traveling" effect */
+  top: auto !important;
+  bottom: auto !important;
 }
 
 /* Mobile: use fixed positioning to prevent clipping */
@@ -92,19 +106,27 @@
     left: 16px;
     right: 16px;
     width: auto;
-    /* Position near the top of viewport when shown */
+    /* Position will be set by JS */
     top: auto;
     bottom: auto;
     transform: none;
     /* Ensure it's above everything */
     z-index: 999999;
-    /* Add some margin from edges */
-    margin: 0;
+    /* NO transitions on mobile */
+    transition: none !important;
   }
   
   /* Hide arrow on mobile since position is calculated dynamically */
   .tooltipBubble::before {
     display: none;
+  }
+
+  /* Force immediate hide on mobile when not active */
+  .tooltipWrapper:not([data-hovered="true"]) .tooltipBubble {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
   }
 }
 
